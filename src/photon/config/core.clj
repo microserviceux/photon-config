@@ -1,12 +1,12 @@
 (ns photon.config.core
   (:require [clojure.tools.logging :as log])
-  (:import (io.github.lukehutch.fastclasspathscanner
-             FastClasspathScanner)))
+  (:import (io.github.lukehutch.fastclasspathscanner FastClasspathScanner)))
 
 (defn class->record [cn]
   (let [tokens (clojure.string/split cn #"\.")
         prefix (clojure.string/join "." (drop-last tokens))
         all (str prefix "/->" (last tokens))]
+    (require (symbol prefix))
     (eval (read-string all))))
 
 (defn db-implementations []
