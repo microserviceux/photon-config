@@ -3,8 +3,14 @@
   (:import (io.github.lukehutch.fastclasspathscanner
              FastClasspathScanner)))
 
+(defn class->record [cn]
+  (let [tokens (clojure.string/split cn #"\.")
+        prefix (clojure.string/join "." (drop-last tokens))
+        all (str prefix "/->" (last tokens))]
+    (eval (read-string all))))
+
 (defn db-implementations []
-  (map #(Class/forName %)
+  (map class->record
        (.getNamesOfClassesImplementing
          (.scan (FastClasspathScanner.
                   (into-array String ["photon.db"])))
