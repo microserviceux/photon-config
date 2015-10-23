@@ -1,20 +1,5 @@
-(ns photon.config.core
-  (:require [clojure.tools.logging :as log])
-  (:import (io.github.lukehutch.fastclasspathscanner FastClasspathScanner)))
-
-(defn class->record [cn]
-  (let [tokens (clojure.string/split cn #"\.")
-        prefix (clojure.string/join "." (drop-last tokens))
-        all (str prefix "/->" (last tokens))]
-    (require (symbol prefix))
-    (eval (read-string all))))
-
-(defn db-implementations []
-  (map class->record
-       (.getNamesOfClassesImplementing
-         (.scan (FastClasspathScanner.
-                  (into-array String ["photon.db"])))
-         (Class/forName "photon.db.core.DB"))))
+(ns photon.config
+  (:require [clojure.tools.logging :as log]))
 
 (defn load-props
   "Receives a path and loads the Java properties for the file
