@@ -53,7 +53,7 @@
              "riak.node.X           : "
              "If using Riak, the nodes that form the cluster (riak.node.1, riak.node.2, etc.)")]
     (throw (UnsupportedOperationException.
-             (str "Error: " message "\n\n" main-text)))))
+             (str message "\n\n" main-text)))))
 
 (defn clean [s]
   (if (or (and (.startsWith s "\"") (.endsWith s "\""))
