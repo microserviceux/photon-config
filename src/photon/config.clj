@@ -1,6 +1,5 @@
 (ns photon.config
-  (:require [clojure.tools.logging :as log]
-            [photon.db :as db]))
+  (:require [clojure.tools.logging :as log]))
 
 (defn load-props
   "Receives a path and loads the Java properties for the file
@@ -42,10 +41,7 @@
              "-projections.path     : "
              "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
              "-db.backend           : "
-             "DB backend plugin to use (default=dummy). This build of photon is exposing the following backends: "
-             (clojure.string/join #", "
-                                  (map #(db/driver-name (% {}))
-                                       (db/available-backends))) "\n"
+             "DB backend plugin to use (default=dummy). Depending on the build of photon, this can be one of: cassandra, file, mongo, riak, dummy.\n"
              "cassandra.ip          : "
              "If using Cassandra, the host of the cluster\n"
              "file.path             : "
