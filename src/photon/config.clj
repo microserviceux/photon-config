@@ -23,6 +23,7 @@
    :file.path "/tmp/photon/"
    :microservice.name "photon"
    :mongodb.host "localhost"
+   :telnet.port 8375
    :riak.default_bucket "rxriak-events-v1"
    :riak.node.1 "riak1.node.com"
    :riak.node.2 "riak2.node.com"
@@ -30,10 +31,10 @@
 
 (defn throw-error [message]
   (let [main-text
-        (str "Usage: java -jar photon-x.x.x-standalone.jar [-h] [-option=value] ... [-option=value]\n"
+        (str "Usage: java -jar photon-x.x.x-standalone.jar [-h] [-option value] ... [-option value]\n"
              "Options:\n"
-             "-microservice.name    : "
-             "(default = photon)\n"
+             "-microservice.name    : " "Service ID, especially important for Muon (default = photon)\n"
+             "-telnet.port          : " "Port to stream projection updates to (default = 8375)\n"
              "-amqp.url             : "
              "AMQP endpoint (default = amqp://localhost)\n"
              "-parallel.projections : "
@@ -63,15 +64,26 @@
 
 (defn merge-command-line [m args]
   (let [set-args (into #{} args)]
-    (if (contains? set-args "-h")
+    (if (or (contains? set-args "-h") (contains? set-args "--help"))
       (throw-error "Invoking help...")
-      (let [only-args (map #(subs % 1) (disj set-args "-h"))
-            tokenized (map #(clojure.string/split % #"=") only-args)
-            ks (map (comp keyword first) tokenized)
+      (let [only-args (remove #(or (= % "-h") (= % "--help")) args)
+            tokenized (map #(clojure.string/split % #"=")
+                           (map #(subs % 2)
+                                (filter #(.startsWith % "--") only-args)))
+            posix (try
+                    (let [lst (remove #(.startsWith % "--") args)
+                          m-lst (apply hash-map lst)]
+                      (map vector (map #(subs % 1) (keys m-lst)) (vals m-lst)))
+                    (catch Exception e
+                      (throw-error
+                        (str "Parse error, please check that "
+                             "arguments are pairs of key/value"))))
+            command-line (merge (into {} tokenized) (into {} posix))
+            ks (map (comp keyword first) command-line)
             original-ks (into #{} (keys default-config))
             not-found (remove #(contains? original-ks %) ks)]
         (if (empty? not-found)
-          (let [m-args (zipmap ks (map (comp clean second) tokenized))]
+          (let [m-args (zipmap ks (map (comp clean second) command-line))]
             (merge m m-args))
           (throw-error
             (str "Invalid arguments: "
