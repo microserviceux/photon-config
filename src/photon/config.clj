@@ -23,7 +23,8 @@
    :file.path "/tmp/photon/"
    :microservice.name "photon"
    :mongodb.host "localhost"
-   :telnet.port 8375
+   :projections.port 8375
+   :events.port 8376
    :riak.default_bucket "rxriak-events-v1"
    :riak.node.1 "riak1.node.com"
    :riak.node.2 "riak2.node.com"
@@ -33,8 +34,12 @@
   (let [main-text
         (str "Usage: java -jar photon-x.x.x-standalone.jar [-h] [-option value] ... [-option value]\n"
              "Options:\n"
-             "-microservice.name    : " "Service ID, especially important for Muon (default = photon)\n"
-             "-telnet.port          : " "Port to stream projection updates to (default = 8375)\n"
+             "-microservice.name    : "
+             "Service ID, especially important for Muon (default = photon)\n"
+             "-projections.port     : "
+             "Port to stream projection updates to (default = 8375)\n"
+             "-events.port          : "
+             "Port to stream incoming events to (default = 8376)\n"
              "-amqp.url             : "
              "AMQP endpoint (default = amqp://localhost)\n"
              "-parallel.projections : "
