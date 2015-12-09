@@ -16,6 +16,7 @@
 (def default-config
   {:parallel.projections (str (.availableProcessors
                                (Runtime/getRuntime)))
+   :rest.port 3000
    :db.backend "file"
    :cassandra.ip "127.0.0.1"
    :amqp.url "amqp://localhost"
@@ -36,6 +37,8 @@
              "Options:\n"
              "-microservice.name    : "
              "Service ID, especially important for Muon (default = photon)\n"
+             "-rest.port            : "
+             "The port for the UI frontend and the REST API\n"
              "-projections.port     : "
              "Port to stream projection updates to (default = 8375)\n"
              "-events.port          : "
@@ -48,15 +51,15 @@
              "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
              "-db.backend           : "
              "DB backend plugin to use (default=dummy). Depending on the build of photon, this can be one of: cassandra, file, mongo, riak, dummy.\n"
-             "cassandra.ip          : "
+             "-cassandra.ip          : "
              "If using Cassandra, the host of the cluster\n"
-             "file.path             : "
+             "-file.path             : "
              "If using files as backend, the absolute path to the file\n"
-             "mongodb.host          : "
+             "-mongodb.host          : "
              "If using MongoDB, the host of the cluster\n"
-             "riak.default_bucket   : "
+             "-riak.default_bucket   : "
              "If using Riak, the name of the bucket\n"
-             "riak.node.X           : "
+             "-riak.node.X           : "
              "If using Riak, the nodes that form the cluster (riak.node.1, riak.node.2, etc.)")]
     (throw (UnsupportedOperationException.
              (str message "\n\n" main-text)))))
@@ -94,6 +97,12 @@
             (str "Invalid arguments: "
                  (clojure.string/join #", " (map name not-found)))))))))
 
+(defn integer-params [m ps]
+  (if (empty? ps)
+    m
+    (recur (update-in m [(first ps)] (comp read-string str))
+           (rest ps))))
+
 (defn config [& args]
   (let [props
         (try
@@ -102,8 +111,8 @@
             (try (load-props "config") (catch Exception e {}))))
         with-default (merge default-config props)
         command-line-props (merge-command-line with-default args)
-        final-props (update-in command-line-props
-                               [:parallel.projections] (comp read-string str))]
+        final-props (integer-params command-line-props
+                                    [:parallel.projections :rest.port])]
     (log/info "Properties" (with-out-str (clojure.pprint/pprint final-props)))
     final-props))
 
