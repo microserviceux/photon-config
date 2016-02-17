@@ -26,6 +26,8 @@
    :mongodb.host "localhost"
    :projections.port 8375
    :events.port 8376
+   :admin.user "admin"
+   :admin.pass "p4010n"
    :riak.default_bucket "rxriak-events-v1"
    :riak.node.1 "riak1.node.com"
    :riak.node.2 "riak2.node.com"
@@ -39,6 +41,10 @@
              "Service ID, especially important for Muon (default = photon)\n"
              "-rest.port            : "
              "The port for the UI frontend and the REST API\n"
+             "-admin.user           : "
+             "The default username for logging in and requesting API tokens\n"
+             "-admin.pass           : "
+             "The default password for logging in and requesting API tokens\n"
              "-projections.port     : "
              "Port to stream projection updates to (default = 8375)\n"
              "-events.port          : "
