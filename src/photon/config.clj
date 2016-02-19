@@ -1,5 +1,6 @@
 (ns photon.config
-  (:require [clojure.tools.logging :as log]))
+  (:require [clojure.tools.logging :as log]
+            [buddy.hashers :as hashers]))
 
 (defn load-props
   "Receives a path and loads the Java properties for the file
@@ -42,9 +43,9 @@
              "-rest.port            : "
              "The port for the UI frontend and the REST API\n"
              "-admin.user           : "
-             "The default username for logging in and requesting API tokens\n"
+             "The default username for logging in and requesting API tokens (default = admin)\n"
              "-admin.pass           : "
-             "The default password for logging in and requesting API tokens\n"
+             "The default password for logging in and requesting API tokens (default = p4010n)\n"
              "-projections.port     : "
              "Port to stream projection updates to (default = 8375)\n"
              "-events.port          : "
@@ -118,7 +119,8 @@
         with-default (merge default-config props)
         command-line-props (merge-command-line with-default args)
         final-props (integer-params command-line-props
-                                    [:parallel.projections :rest.port])]
+                                    [:parallel.projections :rest.port])
+        final-props (update-in final-props [:admin.pass] hashers/encrypt)]
     (log/info "Properties" (with-out-str (clojure.pprint/pprint final-props)))
     final-props))
 
