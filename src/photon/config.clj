@@ -18,6 +18,8 @@
   {:parallel.projections (str (.availableProcessors
                                (Runtime/getRuntime)))
    :rest.port 3000
+   :rest.keystore nil
+   :rest.keypass ""
    :db.backend "file"
    :cassandra.ip "127.0.0.1"
    :amqp.url "amqp://localhost"
@@ -42,6 +44,10 @@
              "Service ID, especially important for Muon (default = photon)\n"
              "-rest.port            : "
              "The port for the UI frontend and the REST API\n"
+             "-rest.keystore        : "
+             "If set, the web server will be started in SSL mode using the certificates identified by this path\n"
+             "-rest.keypass         : "
+             "The password required to open the keystore set in rest.keystore. Not required in not-SSL mode\n"
              "-admin.user           : "
              "The default username for logging in and requesting API tokens (default = admin)\n"
              "-admin.pass           : "
