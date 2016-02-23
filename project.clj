@@ -1,4 +1,4 @@
-(defproject tranchis/photon-config "0.9.35"
+(defproject tranchis/photon-config "0.9.36"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"

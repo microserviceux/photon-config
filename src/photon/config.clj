@@ -17,6 +17,7 @@
 (def default-config
   {:parallel.projections (str (.availableProcessors
                                (Runtime/getRuntime)))
+   :rest.host "localhost"
    :rest.port 3000
    :rest.keystore nil
    :rest.keypass ""
@@ -42,6 +43,8 @@
              "Options:\n"
              "-microservice.name    : "
              "Service ID, especially important for Muon (default = photon)\n"
+             "-rest.host            : "
+             "The IP or hostname of the web server for frontend and API. Change it for external access (default = localhost)\n"
              "-rest.port            : "
              "The port for the UI frontend and the REST API\n"
              "-rest.keystore        : "
