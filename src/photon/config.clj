@@ -23,7 +23,7 @@
    :rest.keypass ""
    :db.backend "file"
    :cassandra.ip "127.0.0.1"
-   :amqp.url "amqp://localhost"
+   :amqp.url :local
    :projections.path "/tmp/"
    :file.path "/tmp/photon/"
    :microservice.name "photon"
@@ -32,6 +32,7 @@
    :events.port 8376
    :admin.user "admin"
    :admin.pass "p4010n"
+   :admin.secret (java.util.UUID/randomUUID)
    :riak.default_bucket "rxriak-events-v1"
    :riak.node.1 "riak1.node.com"
    :riak.node.2 "riak2.node.com"
@@ -55,6 +56,8 @@
              "The default username for logging in and requesting API tokens (default = admin)\n"
              "-admin.pass           : "
              "The default password for logging in and requesting API tokens (default = p4010n)\n"
+             "-admin.secret         : "
+             "A secret string that will be used to encode authentication tokens (default is random on launch)\n"
              "-projections.port     : "
              "Port to stream projection updates to (default = 8375)\n"
              "-events.port          : "
