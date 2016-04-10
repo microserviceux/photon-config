@@ -24,6 +24,7 @@
    :db.backend "file"
    :cassandra.ip "127.0.0.1"
    :amqp.url :local
+   :h2.path "/tmp/photon.h2"
    :projections.path "/tmp/"
    :file.path "/tmp/photon/"
    :microservice.name "photon"
@@ -70,6 +71,8 @@
              "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
              "-db.backend           : "
              "DB backend plugin to use (default=dummy). Depending on the build of photon, this can be one of: cassandra, file, mongo, riak, dummy.\n"
+             "-h2.path              : "
+             "If using H2, the file prefix for the database file, including path (default = /tmp/photon.h2)\n"
              "-cassandra.ip          : "
              "If using Cassandra, the host of the cluster\n"
              "-file.path             : "
