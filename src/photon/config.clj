@@ -21,7 +21,7 @@
    :rest.port 3000
    :rest.keystore nil
    :rest.keypass ""
-   :db.backend "file"
+   :db.backend "h2"
    :cassandra.ip "127.0.0.1"
    :amqp.url :local
    :h2.path "/tmp/photon.h2"
@@ -70,7 +70,7 @@
              "-projections.path     : "
              "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
              "-db.backend           : "
-             "DB backend plugin to use (default=dummy). Depending on the build of photon, this can be one of: cassandra, file, mongo, riak, dummy.\n"
+             "DB backend plugin to use (default=h2). Depending on the build of photon, this can be one of: h2, cassandra, redis, file, mongo, riak, dummy.\n"
              "-h2.path              : "
              "If using H2, the file prefix for the database file, including path (default = /tmp/photon.h2)\n"
              "-cassandra.ip          : "
