@@ -30,6 +30,8 @@
    :microservice.name "photon"
    :mongodb.host "localhost"
    :projections.port 8375
+   :measure.active true
+   :measure.rate 30000
    :events.port 8376
    :admin.user "admin"
    :admin.pass "p4010n"
@@ -69,19 +71,23 @@
              "Number of cores assigned for parallel stream processing (default = number of cores on your machine)\n"
              "-projections.path     : "
              "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
+             "-measure.active       : "
+             "Whether or not to collect memory usage of projections, deactivate to improve performance (default = true)\n"
+             "-measure.rate         : "
+             "How often, in milliseconds, should memory usage be collected if memory.active is true (default = 30000)\n"
              "-db.backend           : "
              "DB backend plugin to use (default=h2). Depending on the build of photon, this can be one of: h2, cassandra, redis, file, mongo, riak, dummy.\n"
              "-h2.path              : "
              "If using H2, the file prefix for the database file, including path (default = /tmp/photon.h2)\n"
-             "-cassandra.ip          : "
+             "-cassandra.ip         : "
              "If using Cassandra, the host of the cluster\n"
-             "-file.path             : "
+             "-file.path            : "
              "If using files as backend, the absolute path to the file\n"
-             "-mongodb.host          : "
+             "-mongodb.host         : "
              "If using MongoDB, the host of the cluster\n"
-             "-riak.default_bucket   : "
+             "-riak.default_bucket  : "
              "If using Riak, the name of the bucket\n"
-             "-riak.node.X           : "
+             "-riak.node.X          : "
              "If using Riak, the nodes that form the cluster (riak.node.1, riak.node.2, etc.)")]
     (throw (UnsupportedOperationException.
              (str message "\n\n" main-text)))))
