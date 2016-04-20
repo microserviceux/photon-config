@@ -23,6 +23,7 @@
    :rest.keypass ""
    :db.backend "h2"
    :cassandra.ip "127.0.0.1"
+   :cassandra.buffer 100
    :amqp.url :local
    :h2.path "/tmp/photon.h2"
    :projections.path "/tmp/"
@@ -81,6 +82,8 @@
              "If using H2, the file prefix for the database file, including path (default = /tmp/photon.h2)\n"
              "-cassandra.ip         : "
              "If using Cassandra, the host of the cluster\n"
+             "-cassandra.buffer     : "
+             "If using Cassandra, the number of events to keep in buffer in each query (default = 500)\n"
              "-file.path            : "
              "If using files as backend, the absolute path to the file\n"
              "-mongodb.host         : "
@@ -141,7 +144,8 @@
         command-line-props (merge-command-line with-default args)
         final-props (integer-params command-line-props
                                     [:parallel.projections :rest.port
-                                     :measure.rate :measure.active])
+                                     :measure.rate :measure.active
+                                     :cassandra.buffer])
         final-props (update-in final-props [:admin.pass] hashers/encrypt)]
     (log/info "Properties" (with-out-str (clojure.pprint/pprint final-props)))
     final-props))
