@@ -139,9 +139,9 @@
             (try (load-props "config") (catch Exception e {}))))
         with-default (merge default-config props)
         command-line-props (merge-command-line with-default args)
-        final-props (integer-params
-                     command-line-props
-                     [:parallel.projections :rest.port :measure.rate])
+        final-props (integer-params command-line-props
+                                    [:parallel.projections :rest.port
+                                     :measure.rate :measure.active])
         final-props (update-in final-props [:admin.pass] hashers/encrypt)]
     (log/info "Properties" (with-out-str (clojure.pprint/pprint final-props)))
     final-props))
