@@ -7,6 +7,9 @@
   represented by the path inside the classpath (typically, a resource)."
   [resource-name]
   (let [config-file (clojure.java.io/resource (str resource-name ".properties"))
+        config-file (if (nil? config-file)
+                      (java.io.File. (str "./" resource-name ".properties"))
+                      config-file)
         io (clojure.java.io/input-stream config-file)
         prop (java.util.Properties.)]
     (log/info "opening resource" config-file)
