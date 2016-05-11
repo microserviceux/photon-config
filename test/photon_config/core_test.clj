@@ -1,7 +1,10 @@
 (ns photon-config.core-test
   (:require [clojure.test :refer :all]
-            [photon-config.core :refer :all]))
+            [photon.config :refer :all]
+            [midje.sweet :refer :all])
+  (:import (java.lang ProcessEnvironment$Variable
+                      ProcessEnvironment$Value)))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(fact "Default config is default"
+      (dissoc (raw-config) :admin.pass :parallel.projections)
+      => (dissoc default-config :admin.pass :parallel.projections))

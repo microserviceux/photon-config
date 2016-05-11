@@ -1,6 +1,8 @@
 (ns photon.config
   (:require [clojure.tools.logging :as log]
-            [buddy.hashers :as hashers]))
+            [buddy.hashers :as hashers])
+  (:import (io.muoncore.config MuonConfigBuilder AutoConfiguration
+                               AutoConfigurationWriter)))
 
 (defn load-props
   "Receives a path and loads the Java properties for the file
@@ -137,7 +139,7 @@
     (recur (update-in m [(first ps)] (comp read-string str))
            (rest ps))))
 
-(defn config [& args]
+(defn raw-config [& args]
   (let [props
         (try
           (load-props "photon")
@@ -153,3 +155,39 @@
     (log/info "Properties" (with-out-str (clojure.pprint/pprint final-props)))
     final-props))
 
+(defn photon-writer [rc]
+  (reify AutoConfigurationWriter
+    (^void writeConfiguration [this ^AutoConfiguration config]
+     (let [props (.getProperties config)]
+       (dorun (map #(when-not (or (nil? (val %))
+                                  (.containsKey props (name (key %))))
+                      (.put props (name (key %)) (val %)))
+                   rc))
+       (let [amqp-url (:amqp.url rc)]
+         (if (or (nil? amqp-url) (= :local amqp-url)
+                 (= "local" amqp-url) (= ":local" amqp-url))
+           (do
+             (when-not (.containsKey props "muon.discovery.factories")
+               (.put props "muon.discovery.factories"
+                     "io.muoncore.discovery.InMemDiscoveryFactory"))
+             (when-not (.containsKey props "muon.transport.factories")
+               (.put props "muon.transport.factories"
+                     "io.muoncore.transport.InMemTransportFactory")))
+           (do
+             (when-not (.containsKey props "muon.discovery.factories")
+               (.put "muon.discovery.factories"
+                     "io.muoncore.discovery.amqp.AmqpDiscoveryFactory"))
+             (when-not (.containsKey props "muon.transport.factories")
+               (.put props "muon.transport.factories"
+                     "io.muoncore.transport.amqp.AmqpMuonTransportFactory"))
+             (when-not (.containsKey props "amqp.transport.url")
+               (.put props "amqp.transport.url" amqp-url))
+             (when-not (.containsKey props "amqp.discovery.url")
+               (.put props "amqp.discovery.url" amqp-url)))))))))
+
+(defn config [& args]
+  (let [conf (apply raw-config args)
+        mcb (MuonConfigBuilder/withServiceIdentifier
+             (:microservice.name conf))]
+    (.addWriter mcb (photon-writer conf))
+    (.build mcb)))
