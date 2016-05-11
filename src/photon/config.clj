@@ -190,4 +190,4 @@
         mcb (MuonConfigBuilder/withServiceIdentifier
              (:microservice.name conf))]
     (.addWriter mcb (photon-writer conf))
-    (.build mcb)))
+    mcb))
