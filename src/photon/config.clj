@@ -159,35 +159,31 @@
   (reify AutoConfigurationWriter
     (^void writeConfiguration [this ^AutoConfiguration config]
      (let [props (.getProperties config)]
-       (dorun (map #(when-not (or (nil? (val %))
-                                  (.containsKey props (name (key %))))
+       (dorun (map #(when-not (nil? (val %))
                       (.put props (name (key %)) (val %)))
                    rc))
        (let [amqp-url (:amqp.url rc)]
          (if (or (nil? amqp-url) (= :local amqp-url)
                  (= "local" amqp-url) (= ":local" amqp-url))
-           (do
-             (when-not (.containsKey props "muon.discovery.factories")
-               (.put props "muon.discovery.factories"
-                     "io.muoncore.discovery.InMemDiscoveryFactory"))
-             (when-not (.containsKey props "muon.transport.factories")
-               (.put props "muon.transport.factories"
-                     "io.muoncore.transport.InMemTransportFactory")))
-           (do
-             (when-not (.containsKey props "muon.discovery.factories")
-               (.put "muon.discovery.factories"
-                     "io.muoncore.discovery.amqp.AmqpDiscoveryFactory"))
-             (when-not (.containsKey props "muon.transport.factories")
-               (.put props "muon.transport.factories"
-                     "io.muoncore.transport.amqp.AmqpMuonTransportFactory"))
-             (when-not (.containsKey props "amqp.transport.url")
-               (.put props "amqp.transport.url" amqp-url))
-             (when-not (.containsKey props "amqp.discovery.url")
-               (.put props "amqp.discovery.url" amqp-url)))))))))
+           (doto props
+             (.put "muon.discovery.factories"
+                   "io.muoncore.discovery.InMemDiscoveryFactory")
+             (.put "muon.transport.factories"
+                   "io.muoncore.transport.InMemTransportFactory"))
+           (doto props
+             (.put "muon.discovery.factories"
+                   "io.muoncore.discovery.amqp.AmqpDiscoveryFactory")
+             (.put "muon.transport.factories"
+                   "io.muoncore.transport.amqp.AmqpMuonTransportFactory")
+             (.put "amqp.transport.url" amqp-url)
+             (.put "amqp.discovery.url" amqp-url))))))))
 
 (defn config [& args]
   (let [conf (apply raw-config args)
         mcb (MuonConfigBuilder/withServiceIdentifier
              (:microservice.name conf))]
     (.addWriter mcb (photon-writer conf))
-    mcb))
+    (let [consolidated (into {} (.getProperties (.build mcb)))
+          with-keys (zipmap (map keyword (keys consolidated))
+                            (vals consolidated))]
+      (merge with-keys {:muon-builder mcb}))))
