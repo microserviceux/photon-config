@@ -159,10 +159,11 @@
   (reify AutoConfigurationWriter
     (^void writeConfiguration [this ^AutoConfiguration config]
      (let [props (.getProperties config)]
-       (dorun (map #(when-not (nil? (val %))
+       (dorun (map #(when-not (or (nil? (val %))
+                                  (.containsKey props (name (key %))))
                       (.put props (name (key %)) (val %)))
                    rc))
-       (let [amqp-url (:muon.url rc)]
+       (let [amqp-url (get props "muon.url")]
          (if (or (nil? amqp-url) (= :local amqp-url)
                  (= "local" amqp-url) (= ":local" amqp-url))
            (doto props
