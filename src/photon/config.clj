@@ -29,7 +29,7 @@
    :db.backend "h2"
    :cassandra.ip "127.0.0.1"
    :cassandra.buffer 100
-   :amqp.url :local
+   :muon.url :local
    :h2.path "/tmp/photon.h2"
    :projections.path "/tmp/"
    :file.path "/tmp/photon/"
@@ -71,8 +71,8 @@
              "Port to stream projection updates to (default = 8375)\n"
              "-events.port          : "
              "Port to stream incoming events to (default = 8376)\n"
-             "-amqp.url             : "
-             "AMQP endpoint (default = amqp://localhost)\n"
+             "-muon.url             : "
+             "AMQP endpoint for Muon-based transport and discovery (default = amqp://localhost)\n"
              "-parallel.projections : "
              "Number of cores assigned for parallel stream processing (default = number of cores on your machine)\n"
              "-projections.path     : "
@@ -162,7 +162,7 @@
        (dorun (map #(when-not (nil? (val %))
                       (.put props (name (key %)) (val %)))
                    rc))
-       (let [amqp-url (:amqp.url rc)]
+       (let [amqp-url (:muon.url rc)]
          (if (or (nil? amqp-url) (= :local amqp-url)
                  (= "local" amqp-url) (= ":local" amqp-url))
            (doto props
