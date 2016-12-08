@@ -1,4 +1,4 @@
-(defproject tranchis/photon-config "0.9.50"
+(defproject tranchis/photon-config "0.9.51"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :repositories [["snapshots"
