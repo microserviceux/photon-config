@@ -31,7 +31,6 @@
    :cassandra.buffer 100
    :muon.url :local
    :h2.path "/tmp/photon.h2"
-   :projections.path "/tmp/"
    :file.path "/tmp/photon/"
    :microservice.name "photon"
    :mongodb.host "localhost"
@@ -75,8 +74,6 @@
              "AMQP endpoint for Muon-based transport and discovery (default = amqp://localhost)\n"
              "-parallel.projections : "
              "Number of cores assigned for parallel stream processing (default = number of cores on your machine)\n"
-             "-projections.path     : "
-             "Local folder with projections, in EDN format, to pre-load on start (default = /tmp/photon)\n"
              "-measure.active       : "
              "Whether or not to collect memory usage of projections, deactivate to improve performance (default = true)\n"
              "-measure.rate         : "
