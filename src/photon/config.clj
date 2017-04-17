@@ -24,7 +24,7 @@
                                (Runtime/getRuntime)))
    :rest.host "localhost"
    :rest.port 3000
-   :ui.port nil
+   :ui.port 3001
    :rest.keystore nil
    :rest.keypass ""
    :db.backend "h2"
@@ -56,9 +56,9 @@
              "-rest.host            : "
              "The IP or hostname of the web server for frontend and API. Change it for external access (default = localhost)\n"
              "-rest.port            : "
-             "The port for the UI frontend and the REST API\n"
+             "The port for the UI frontend and the REST API (default = 3000)\n"
              "-ui.port              : "
-             "If set, a second web server will be started in this port with a frontend to access photon in UI mode\n"
+             "If set, a second web server will be started in this port with a frontend to access photon in UI mode (default = 3001)\n"
              "-rest.keystore        : "
              "If set, the web server will be started in SSL mode using the certificates identified by this path\n"
              "-rest.keypass         : "
@@ -136,7 +136,10 @@
 (defn integer-params [m ps]
   (if (empty? ps)
     m
-    (recur (update-in m [(first ps)] (comp read-string str)) (rest ps))))
+    (recur (if (or (nil? (get m (first ps))) (number? (get m (first ps))))
+             m
+             (update-in m [(first ps)] (comp read-string str)))
+           (rest ps))))
 
 (defn raw-config [& args]
   (let [props
