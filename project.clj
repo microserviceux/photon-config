@@ -1,4 +1,4 @@
-(defproject muoncore/photon-config "0.9.10"
+(defproject muoncore/photon-config "0.9.11"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :repositories [["snapshots"

@@ -34,7 +34,7 @@
    :h2.path "/tmp/photon.h2"
    :file.path "/tmp/photon/"
    :microservice.name "photon"
-   :mongodb.host "localhost"
+   :mongodb.uri "mongodb://localhost/photon"
    :projections.port 8375
    :measure.active true
    :measure.rate 30000
@@ -91,8 +91,8 @@
              "If using Cassandra, the number of events to keep in buffer in each query (default = 500)\n"
              "-file.path            : "
              "If using files as backend, the absolute path to the file\n"
-             "-mongodb.host         : "
-             "If using MongoDB, the host of the cluster\n"
+             "-mongodb.uri          : "
+             "If using MongoDB, the connection URI (default = mongodb://localhost/photon)\n"
              "-riak.default_bucket  : "
              "If using Riak, the name of the bucket\n"
              "-riak.node.X          : "
